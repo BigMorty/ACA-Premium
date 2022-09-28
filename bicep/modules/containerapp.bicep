@@ -1,6 +1,7 @@
-param containerAppName string = 'testapp'
+param location string
 param containerAppsEnvName string 
-param location string = 'northcentralusstage'
+param containerAppName string
+param image string = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 
 resource environment 'Microsoft.App/managedEnvironments@2022-06-01-preview' existing = {
   name: containerAppsEnvName
@@ -27,13 +28,13 @@ resource containerApp 'Microsoft.App/containerapps@2022-06-01-preview' = {
     template: {
       containers: [
         {
-          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-          name: 'premiumexample'
+          name: 'main'
+          image: image
         }
       ]
       scale: {
         minReplicas: 1
-        maxReplicas: 1
+        maxReplicas: 5
       }
     }
   }
