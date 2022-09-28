@@ -3,14 +3,9 @@ param logAnalyticsWorkspaceName string = 'logs-${containerAppsEnvName}'
 param location string = 'australiaeast'
 param vnetName string 
 param containerAppsSubnetProps object
-param egressRoutingTableName string 
-param virtualNetworkApplianceIP string 
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: vnetName
-}
-resource egressRoutingTable 'Microsoft.Network/routeTables@2020-11-01' existing = {
-  name: egressRoutingTableName
 }
 
 // Create Subnet to host Azure Container Apps environment  
@@ -57,13 +52,6 @@ resource environment 'Microsoft.App/managedEnvironments@2022-06-01-preview' = {
     vnetConfiguration: {
       internal: true
       infrastructureSubnetId: containerAppsSubnet.id
-      dockerBridgeCidr: '10.2.0.1/16'
-      platformReservedCidr: '10.1.0.0/16'
-      platformReservedDnsIP: '10.1.0.2'
-      outboundSettings: {
-        outBoundType: 'userDefinedRouting'
-        virtualNetworkApplianceIP: virtualNetworkApplianceIP
-      }
     }
     appLogsConfiguration: {
       destination: 'log-analytics'
